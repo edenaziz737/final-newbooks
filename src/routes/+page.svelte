@@ -37,6 +37,15 @@
 			return 'Other';
 		}
 	}
+	let totalRevenue = $derived(
+		transactions.filter((t) => classify(t) === 'Revenue').reduce((sum, t) => sum + t.amount, 0)
+	);
+
+	let totalExpenses = $derived(
+		transactions.filter((t) => classify(t) === 'Expense').reduce((sum, t) => sum + t.amount, 0)
+	);
+
+	let netIncome = $derived(totalRevenue - totalExpenses);
 </script>
 
 <div class="mx-auto max-w-5xl space-y-8 p-6">
@@ -147,15 +156,17 @@
 		<div class="space-y-2">
 			<div class="flex justify-between font-medium text-emerald-700">
 				<span>Total Revenue</span>
-				<span>$0.00</span>
+				<span>${totalRevenue.toFixed(2)}</span>
 			</div>
 			<div class="flex justify-between font-medium text-rose-700">
 				<span>Total Expenses</span>
-				<span>$0.00</span>
+				<span>${totalExpenses.toFixed(2)}</span>
 			</div>
 			<div class="flex justify-between border-t border-slate-300 pt-2 text-lg font-bold">
 				<span>Net Income</span>
-				<span>$0.00</span>
+				<span class={netIncome >= 0 ? 'text-emerald-700' : 'text-rose-700'}>
+					${netIncome.toFixed(2)}
+				</span>
 			</div>
 		</div>
 	</section>
@@ -185,14 +196,14 @@
 							<td class="px-3 py-2">{t.credit}</td>
 							<td class="px-3 py-2 text-right">${t.amount.toFixed(2)}</td>
 							<td class="px-3 py-2">
-  {#if classify(t) === 'Revenue'}
-    <span class="text-emerald-700 font-medium">Revenue</span>
-  {:else if classify(t) === 'Expense'}
-    <span class="text-rose-700 font-medium">Expense</span>
-  {:else}
-    <span class="text-slate-400">Other</span>
-  {/if}
-</td>
+								{#if classify(t) === 'Revenue'}
+									<span class="font-medium text-emerald-700">Revenue</span>
+								{:else if classify(t) === 'Expense'}
+									<span class="font-medium text-rose-700">Expense</span>
+								{:else}
+									<span class="text-slate-400">Other</span>
+								{/if}
+							</td>
 						</tr>
 					{/each}
 				</tbody>
