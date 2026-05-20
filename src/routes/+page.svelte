@@ -28,6 +28,15 @@
 			amount: 800
 		}
 	]);
+	function classify(t) {
+		if (t.credit === 'Revenue') {
+			return 'Revenue';
+		} else if (t.debit.includes('Expense')) {
+			return 'Expense';
+		} else {
+			return 'Other';
+		}
+	}
 </script>
 
 <div class="mx-auto max-w-5xl space-y-8 p-6">
@@ -175,7 +184,15 @@
 							<td class="px-3 py-2">{t.debit}</td>
 							<td class="px-3 py-2">{t.credit}</td>
 							<td class="px-3 py-2 text-right">${t.amount.toFixed(2)}</td>
-							<td class="px-3 py-2 text-slate-400">—</td>
+							<td class="px-3 py-2">
+  {#if classify(t) === 'Revenue'}
+    <span class="text-emerald-700 font-medium">Revenue</span>
+  {:else if classify(t) === 'Expense'}
+    <span class="text-rose-700 font-medium">Expense</span>
+  {:else}
+    <span class="text-slate-400">Other</span>
+  {/if}
+</td>
 						</tr>
 					{/each}
 				</tbody>
